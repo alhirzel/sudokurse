@@ -177,7 +177,7 @@ int check_winner(uint8_t (*board)[9][9]) {
 	return 1;
 }
 
-void sudokurse(void) {
+int main(void) {
 	int cursor_row = 0, cursor_col = 0;
 
 	initscr();
@@ -239,17 +239,10 @@ void sudokurse(void) {
 				if (check_winner(&puzzle) == 1) {
 					endwin();
 					puts("You win!");
-					exit(0);
+					exit(EXIT_SUCCESS);
 				}
 				break;
 		}
 	}
-	endwin();
-}
-
-int main(int argc, char *argv[]) {
-	sudokurse();
-
-	return EXIT_SUCCESS;
 }
 

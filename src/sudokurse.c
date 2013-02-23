@@ -201,8 +201,10 @@ int main(void) {
 	refresh();
 
 	while (1 == 1) {
-		char c;
-		switch (c = getch()) {
+
+		int c = getch();
+
+		switch ((char) c) {
 			
 			/* movement commands */
 			case 'h':
@@ -235,14 +237,15 @@ int main(void) {
 				}
 
 				/* is the new value valid? */
+				uint8_t new_value;
 				if ((' ' == c) || ('.' == c)) {  /* yes: blank */
-					c = BLANK;
+					new_value = BLANK;
 				} else if (c < '1' || c > '9') { /* no */
 					break;
 				} else {                         /* yes: a number */
-					c -= '0';
+					new_value = (uint8_t) (c - '0');
 				}
-				puzzle[cursor_row][cursor_col] = c;
+				puzzle[cursor_row][cursor_col] = new_value;
 				draw_board(&puzzle, cursor_row, cursor_col);
 				refresh();
 				if (check_winner(&puzzle) == 1) {

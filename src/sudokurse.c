@@ -22,6 +22,7 @@
 
 
 
+/* GLOBAL DATA */
 /* board[row][column] */
 
 /* bitfield:
@@ -46,8 +47,11 @@ uint8_t puzzle[9][9] = {
 };
 #define BLANK (0)
 
+#define COLOR_TWIN_SQUARES (1)
 
 
+
+/* FUNCTION PROTOTYPES */
 void read_puzzle(char *filename, uint8_t (*board)[9][9]);
 void position_cursor(int cursor_row, int cursor_col);
 void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *cursor_col);
@@ -98,9 +102,13 @@ void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 	fclose(f);
 }
 
+
+
 void position_cursor(int cursor_row, int cursor_col) {
 	move(2*cursor_row+2, 4*cursor_col+4);
 }
+
+
 
 void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *cursor_col) {
 	for (int row = 0; row < 9; row++) {
@@ -117,7 +125,8 @@ void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *c
 	}
 }
 
-#define C_TWINS (1)
+
+
 void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 	curs_set(0); /* invisible cursor */
 
@@ -154,7 +163,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 			/* use alternate color if same as cursor position */
 			if ((val & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
-				newchar |= COLOR_PAIR(C_TWINS);
+				newchar |= COLOR_PAIR(COLOR_TWIN_SQUARES);
 			}
 
 			position_cursor(row, col);
@@ -164,6 +173,8 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 	position_cursor(cursor_row, cursor_col);
 	curs_set(2); /* block cursor */
 }
+
+
 
 #define WIN (((1<<9) - 1) << 1)
 #define BV(r, c) (1 << ((*board)[r][c] & 0xF))
@@ -193,15 +204,19 @@ int check_winner(uint8_t (*board)[9][9]) {
 	return 1;
 }
 
+
+
 int main(void) {
 	int cursor_row = 0, cursor_col = 0;
 
 	initscr();
 	noecho();
 	curs_set(2); /* block cursor */
+
 	/* colors */
 	start_color();
-	init_pair(C_TWINS, COLOR_RED, COLOR_BLACK);
+	init_pair(COLOR_TWIN_SQUARES, COLOR_RED, COLOR_BLACK);
+
 	read_puzzle("test.puzzle", &puzzle);
 	draw_board(&puzzle, cursor_row, cursor_col);
 	position_cursor_first_blank(&puzzle, &cursor_row, &cursor_col);
@@ -218,7 +233,7 @@ int main(void) {
 		}
 
 		switch ((char) c) {
-			
+
 			/* movement commands */
 			case 'h':
 				cursor_col += 8; cursor_col %= 9;

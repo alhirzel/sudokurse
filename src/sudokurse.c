@@ -64,6 +64,10 @@ void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 		for (int col = 0; col < 9; col++) {
 			c = fgetc(f);
 
+			if (EOF == c) {
+				/* TODO implement failure to read file */
+			}
+
 			/* if '.' then blank, if invalid character then blank... */
 			if ((char) c == '.') {
 				c = BLANK;
@@ -82,6 +86,9 @@ void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 		/* skip newline characters '\r' and '\n' */
 		while (1 == 1) {
 			c = fgetc(f);
+
+			/* EOF from fgetc is handled at the top of the inner 'for' loop above */
+
 			if (c == '\r') continue;
 			if (c == '\n') continue;
 			ungetc(c, f);

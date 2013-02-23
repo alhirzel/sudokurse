@@ -1,3 +1,4 @@
   * On start-up, highlighting is wrong (highlights digit in top-left space, but
     cursor is not on that digit because it is on the first blank space)
   * Probably doesn't check for "trivial win" (i.e. opening completed puzzle)
+  * Make game board size configurable

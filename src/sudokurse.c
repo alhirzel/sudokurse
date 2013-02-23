@@ -138,14 +138,40 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 	curs_set(CURSOR_INVISIBLE);
 
 	/* draw gridlines */
-	for (int i = 0; i < 4*9-3; i++) {
-		mvaddch(7,  i+4, '-');
-		mvaddch(13, i+4, '-');
+	for (int i = 0; i < 4*9-1; i++) {
+		mvaddch(1,  i+3, ACS_HLINE);
+		mvaddch(7,  i+3, ACS_HLINE);
+		mvaddch(13, i+3, ACS_HLINE);
+		mvaddch(19, i+3, ACS_HLINE);
 	}
-	for (int i = 0; i < 2*9-1; i++) {
-		mvaddch(i+2, 14, '|');
-		mvaddch(i+2, 26, '|');
+	for (int i = 0; i < 2*9+1; i++) {
+		mvaddch(i+1, 2, ACS_VLINE);
+		mvaddch(i+1, 14, ACS_VLINE);
+		mvaddch(i+1, 26, ACS_VLINE);
+		mvaddch(i+1, 38, ACS_VLINE);
 	}
+
+	/* corners */
+	mvaddch(1, 2,  ACS_ULCORNER);
+	mvaddch(1, 38, ACS_URCORNER);
+	mvaddch(19, 2,  ACS_LLCORNER);
+	mvaddch(19, 38, ACS_LRCORNER);
+
+	/* tee's */
+	mvaddch(1, 14, ACS_TTEE);
+	mvaddch(1, 26, ACS_TTEE);
+	mvaddch(19, 14, ACS_BTEE);
+	mvaddch(19, 26, ACS_BTEE);
+	mvaddch(7,  2, ACS_LTEE);
+	mvaddch(13, 2, ACS_LTEE);
+	mvaddch(7,  38, ACS_RTEE);
+	mvaddch(13, 38, ACS_RTEE);
+
+	/* crossovers */
+	mvaddch(7, 14, ACS_PLUS);
+	mvaddch(7, 26, ACS_PLUS);
+	mvaddch(13, 14, ACS_PLUS);
+	mvaddch(13, 26, ACS_PLUS);
 
 	/* draw numbers */
 	for (int row = 0; row < 9; row++) {

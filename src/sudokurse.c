@@ -204,6 +204,12 @@ int main(void) {
 
 		int c = getch();
 
+		if (ERR == c) {
+			endwin();
+			fputs("Error reading key.", stderr);
+			exit(EXIT_FAILURE);
+		}
+
 		switch ((char) c) {
 			
 			/* movement commands */

@@ -47,6 +47,14 @@ uint8_t puzzle[9][9] = {
 
 
 
+void read_puzzle(char *filename, uint8_t (*board)[9][9]);
+void position_cursor(int cursor_row, int cursor_col);
+void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *cursor_col);
+void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col);
+int check_winner(uint8_t (*board)[9][9]);
+
+
+
 void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 	FILE *f = fopen(filename, "r");
 	char c;

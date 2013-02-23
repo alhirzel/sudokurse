@@ -22,6 +22,13 @@
 
 
 
+/* These should really be in <ncurses.h>... */
+#define CURSOR_INVISIBLE   (0)
+#define CURSOR_NORMAL      (1)
+#define CURSOR_VERYVISIBLE (2)
+
+
+
 /* GLOBAL DATA */
 /* board[row][column] */
 
@@ -128,7 +135,7 @@ void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *c
 
 
 void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
-	curs_set(0); /* invisible cursor */
+	curs_set(CURSOR_INVISIBLE);
 
 	/* draw gridlines */
 	for (int i = 0; i < 4*9-3; i++) {
@@ -171,7 +178,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 		}
 	}
 	position_cursor(cursor_row, cursor_col);
-	curs_set(2); /* block cursor */
+	curs_set(CURSOR_VERYVISIBLE);
 }
 
 
@@ -211,7 +218,7 @@ int main(void) {
 
 	initscr();
 	noecho();
-	curs_set(2); /* block cursor */
+	curs_set(CURSOR_VERYVISIBLE);
 
 	/* colors */
 	start_color();
@@ -254,9 +261,9 @@ int main(void) {
 
 			/* replace character */
 			case 'r':
-				curs_set(1); /* underline cursor */
+				curs_set(CURSOR_NORMAL);
 				c = getch();
-				curs_set(2); /* block cursor */
+				curs_set(CURSOR_VERYVISIBLE);
 
 				/* is this square immutable? if so, alert user */
 				if (1 == (puzzle[cursor_row][cursor_col] >> 7)) {

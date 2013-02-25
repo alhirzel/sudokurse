@@ -162,23 +162,23 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 		for (col = 0; col < 9; col++) {
 			mvaddch(0, 4*(col+1), (chtype) ('1' + col) | A_BOLD);
 
-			uint8_t val = (*board)[row][col];
+			uint8_t val_under_cursor = (*board)[row][col];
 			chtype newchar;
 
 			/* determine new character */
-			if (PUZZLE_BLANK == val) {
+			if (PUZZLE_BLANK == val_under_cursor) {
 				newchar = ' ';
 			} else {
-				newchar = (val & 0xF) + '0';
+				newchar = (val_under_cursor & 0xF) + '0';
 			}
 
 			/* underline if immutable */
-			if (1 == val >> 7) {
+			if (1 == val_under_cursor >> 7) {
 				newchar |= A_BOLD;
 			}
 
 			/* use alternate color if same as cursor position */
-			if ((val & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
+			if ((val_under_cursor & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
 				newchar |= COLOR_PAIR(COLOR_SAME_NUMBER);
 			}
 

@@ -211,23 +211,31 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 				newchar = '.';
 
 			} else {
+
+				/* some number */
 				newchar = (val_under_cursor & 0xF) + '0';
-			}
 
-			/* underline if immutable */
-			if (IS_IMMUTABLE(*board, row, col)) {
-				newchar |= A_BOLD;
-			}
+				/* use specific color if same as cursor position */
+				if ((val_under_cursor & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
+					if (PUZZLE_BLANK != val_under_cursor) {
+						newchar |= COLOR_PAIR(COLOR_SAME_NUMBER);
+					}
 
-			/* use alternate color if same as cursor position */
-			if ((val_under_cursor & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
-				newchar |= COLOR_PAIR(COLOR_SAME_NUMBER);
+				/* embolden/special color if number is immutable */
+				} else if (IS_IMMUTABLE(*board, row, col)) {
+					newchar |= A_BOLD | COLOR_PAIR(COLOR_IMMUTABLE);
+
+				/* special color if number is user-supplied */
+				} else if (IS_USER_SUPPLIED(*board, row, col)) {
+					newchar |= COLOR_PAIR(COLOR_USER_SUPPLIED_VALUE);
+				}
 			}
 
 			position_cursor(board, row, col, NO_VISUAL_CUE);
 			addch(newchar);
 		}
 	}
+
 	position_cursor(board, cursor_row, cursor_col, VISUAL_CUE);
 }
 

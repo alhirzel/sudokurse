@@ -268,22 +268,24 @@ int main(void) {
 		}
 
 		switch ((char) c) {
+#define INCR_MOD_9(x) (x = (x + 1) % 9)
+#define DECR_MOD_9(x) (x = (x + 8) % 9)
 
 			/* movement commands */
 			case 'h':
-				cursor_col += 8; cursor_col %= 9;
+				DECR_MOD_9(cursor_col);
 				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
 			case 'j':
-				cursor_row += 1; cursor_row %= 9;
+				INCR_MOD_9(cursor_row);
 				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
 			case 'k':
-				cursor_row += 8; cursor_row %= 9;
+				DECR_MOD_9(cursor_row);
 				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
 			case 'l':
-				cursor_col += 1; cursor_col %= 9;
+				INCR_MOD_9(cursor_col);
 				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
 

@@ -289,6 +289,28 @@ int main(void) {
 				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
 
+			/* diagonal movement commands borrowed from NetHack. */
+			case 'u':
+				DECR_MOD_9(cursor_row);
+				INCR_MOD_9(cursor_col);
+				draw_board(&puzzle, cursor_row, cursor_col);
+				break;
+			case 'y':
+				DECR_MOD_9(cursor_row);
+				DECR_MOD_9(cursor_col);
+				draw_board(&puzzle, cursor_row, cursor_col);
+				break;
+			case 'b':
+				INCR_MOD_9(cursor_row);
+				DECR_MOD_9(cursor_col);
+				draw_board(&puzzle, cursor_row, cursor_col);
+				break;
+			case 'n':
+				INCR_MOD_9(cursor_row);
+				INCR_MOD_9(cursor_col);
+				draw_board(&puzzle, cursor_row, cursor_col);
+				break;
+
 			/* replace character */
 			case 'r':
 				curs_set(CURSOR_NORMAL);

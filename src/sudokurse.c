@@ -19,6 +19,7 @@
 #include <ncurses.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "undo.h"
 
 
 
@@ -248,6 +249,10 @@ int main(void) {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 	};
 
+	/* Holds pointer to first 'undo_move_record' */
+	struct undo_move_record *undo_stack = NULL;
+	struct undo_move_record *temp_move_ptr;
+
 	initscr();
 	noecho();
 	curs_set(CURSOR_VERYVISIBLE);
@@ -345,14 +350,12 @@ int main(void) {
 				}
 
 				/* save this change on the 'undo' stack */
-				/*
-				struct move_record *x = malloc(sizeof(struct move_record));
-				x->row = cursor_row;
-				x->col = cursor_col;
-				x->old = puzzle[x->row][x->col];
-				x->new = new_value;
-				*/
-				/* TODO: support undo */
+				temp_move_ptr = malloc(sizeof(struct undo_move_record));
+				temp_move_ptr->row = cursor_row;
+				temp_move_ptr->col = cursor_col;
+				temp_move_ptr->old_value = puzzle[temp_move_ptr->row][temp_move_ptr->col];
+				temp_move_ptr->new_value = new_value;
+				undo_push(&undo_stack, temp_move_ptr);
 
 				/* make the change */
 				puzzle[cursor_row][cursor_col] = new_value;
@@ -370,7 +373,12 @@ int main(void) {
 			/* undo */
 			case 'u': // conflicts with diagonal movement (up/right)
 			case 'U':
-				/* TODO: support undo */
+				temp_move_ptr = undo_pop(&undo_stack);
+				cursor_row = temp_move_ptr->row;
+				cursor_col = temp_move_ptr->col;
+				puzzle[cursor_row][cursor_col] = temp_move_ptr->old_value;
+				free(temp_move_ptr);
+				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
 
 		}

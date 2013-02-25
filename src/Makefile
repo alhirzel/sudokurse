@@ -1,5 +1,5 @@
 NAME=sudokurse
-SRC=
+SRC=undo.c
 SRC+=${NAME}.c
 CC=clang
 

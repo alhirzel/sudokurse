@@ -35,6 +35,7 @@
 
 /* Color of squares which are the same value. */
 #define COLOR_SAME_NUMBER (1)
+#define COLOR_USER_SUPPLIED_VALUE (2)
 
 
 
@@ -282,6 +283,7 @@ int main(void) {
 	/* Set up colors */
 	start_color();
 	init_pair(COLOR_SAME_NUMBER, COLOR_RED, COLOR_BLACK);
+	init_pair(COLOR_USER_SUPPLIED_VALUE, COLOR_GREEN, COLOR_BLACK);
 
 	/* start of game logic - read puzzle and put cursor on first blank square
 	 * (starting the cursor on an immutable square is suboptimal) */

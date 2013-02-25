@@ -48,10 +48,10 @@ int check_winner(uint8_t (*board)[9][9]);
 
 void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 	FILE *f = fopen(filename, "r");
-	int c;
+	int c, row, col;
 
-	for (int row = 0; row < 9; row++) {
-		for (int col = 0; col < 9; col++) {
+	for (row = 0; row < 9; row++) {
+		for (col = 0; col < 9; col++) {
 			c = fgetc(f);
 
 			if (EOF == c) {
@@ -97,8 +97,10 @@ void position_cursor(int cursor_row, int cursor_col) {
 
 
 void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *cursor_col) {
-	for (int row = 0; row < 9; row++) {
-		for (int col = 0; col < 9; col++) {
+	int row, col;
+
+	for (row = 0; row < 9; row++) {
+		for (col = 0; col < 9; col++) {
 
 			/* if blank... */
 			if (PUZZLE_BLANK == (*board)[row][col]) {
@@ -114,16 +116,18 @@ void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *c
 
 
 void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
+	int i, row, col;
+
 	curs_set(CURSOR_INVISIBLE);
 
 	/* draw gridlines */
-	for (int i = 0; i < 4*9-1; i++) {
+	for (i = 0; i < 4*9-1; i++) {
 		mvaddch(1,  i+3, ACS_HLINE);
 		mvaddch(7,  i+3, ACS_HLINE);
 		mvaddch(13, i+3, ACS_HLINE);
 		mvaddch(19, i+3, ACS_HLINE);
 	}
-	for (int i = 0; i < 2*9+1; i++) {
+	for (i = 0; i < 2*9+1; i++) {
 		mvaddch(i+1, 2, ACS_VLINE);
 		mvaddch(i+1, 14, ACS_VLINE);
 		mvaddch(i+1, 26, ACS_VLINE);
@@ -153,9 +157,9 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 	mvaddch(13, 26, ACS_PLUS);
 
 	/* draw numbers */
-	for (int row = 0; row < 9; row++) {
+	for (row = 0; row < 9; row++) {
 		mvaddch(2*(row+1), 0, (chtype) ('1' + row) | A_BOLD);
-		for (int col = 0; col < 9; col++) {
+		for (col = 0; col < 9; col++) {
 			mvaddch(0, 4*(col+1), (chtype) ('1' + col) | A_BOLD);
 
 			uint8_t val = (*board)[row][col];
@@ -194,13 +198,14 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 /* returns 1 if game is won, 0 otherwise */
 int check_winner(uint8_t (*board)[9][9]) {
 	uint16_t winner_row, winner_col, winner_group;
+	int r, c, i, j;
 
 	/* build up three integers with bits set as numbers are checked off... */
-	for (int i = 0; i < 9; i++) {
+	for (i = 0; i < 9; i++) {
 
 		/* search the i'th row and i'th column */
 		winner_row = winner_col = 0;
-		for (int j = 0; j < 9; j++) {
+		for (j = 0; j < 9; j++) {
 			winner_row |= BV(i, j);
 			winner_col |= BV(j, i);
 		}
@@ -209,7 +214,7 @@ int check_winner(uint8_t (*board)[9][9]) {
 
 		/* search the i'th group */
 		winner_group = 0;
-		int c = 3 * (i % 3), r = (i - c/3);
+		c = 3 * (i % 3), r = (i - c/3);
 		winner_group |= BV(r+0, c+0) | BV(r+0, c+1) | BV(r+0, c+2);
 		winner_group |= BV(r+1, c+0) | BV(r+1, c+1) | BV(r+1, c+2);
 		winner_group |= BV(r+2, c+0) | BV(r+2, c+1) | BV(r+2, c+2);

@@ -297,6 +297,7 @@ int main(void) {
 				break;
 
 			/* diagonal movement commands borrowed from NetHack. */
+			/* TOOD these conflict with 'undo' functionality
 			case 'u':
 				DECR_MOD_9(cursor_row);
 				INCR_MOD_9(cursor_col);
@@ -317,6 +318,7 @@ int main(void) {
 				INCR_MOD_9(cursor_col);
 				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
+			*/
 
 			/* replace character */
 			case 'r':
@@ -342,6 +344,16 @@ int main(void) {
 					new_value = (uint8_t) (c - '0');
 				}
 
+				/* save this change on the 'undo' stack */
+				/*
+				struct move_record *x = malloc(sizeof(struct move_record));
+				x->row = cursor_row;
+				x->col = cursor_col;
+				x->old = puzzle[x->row][x->col];
+				x->new = new_value;
+				*/
+				/* TODO: support undo */
+
 				/* make the change */
 				puzzle[cursor_row][cursor_col] = new_value;
 				draw_board(&puzzle, cursor_row, cursor_col);
@@ -353,6 +365,12 @@ int main(void) {
 					puts("You win!");
 					exit(EXIT_SUCCESS);
 				}
+				break;
+
+			/* undo */
+			case 'u': // conflicts with diagonal movement (up/right)
+			case 'U':
+				/* TODO: support undo */
 				break;
 
 		}

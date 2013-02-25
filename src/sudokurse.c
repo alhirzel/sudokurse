@@ -42,6 +42,7 @@
 void read_puzzle(char *filename, uint8_t (*board)[9][9]);
 void position_cursor(int cursor_row, int cursor_col);
 void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *cursor_col);
+void draw_board_box(void);
 void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col);
 int check_winner(uint8_t (*board)[9][9]);
 
@@ -116,10 +117,8 @@ void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *c
 
 
 
-void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
-	int i, row, col;
-
-	curs_set(CURSOR_INVISIBLE);
+void draw_board_box(void) {
+	int i;
 
 	/* draw gridlines */
 	for (i = 0; i < 4*9-1; i++) {
@@ -156,6 +155,16 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 	mvaddch(7, 26, ACS_PLUS);
 	mvaddch(13, 14, ACS_PLUS);
 	mvaddch(13, 26, ACS_PLUS);
+}
+
+
+
+void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
+	int row, col;
+
+	curs_set(CURSOR_INVISIBLE);
+
+	draw_board_box();
 
 	/* draw numbers */
 	for (row = 0; row < 9; row++) {

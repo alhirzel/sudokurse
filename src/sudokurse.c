@@ -30,31 +30,6 @@
 /* "blank" value for a given square in the puzzle (see main). */
 #define PUZZLE_BLANK (0)
 
-
-/* GLOBAL DATA */
-/* board[row][column] */
-
-/* bitfield:
- * M _ _ _ D3 D2 D1 D0
- *
- * M - mutable, 0 for mutable, 1 for immutable
- * D3 D2 D1 D0 - number
- *
- * entirely zero = blank character
- */
-
-uint8_t puzzle[9][9] = {
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-	{0, 0, 0, 0, 0, 0, 0, 0, 0},
-};
-
 #define COLOR_TWIN_SQUARES (1)
 
 
@@ -242,6 +217,31 @@ int check_winner(uint8_t (*board)[9][9]) {
 
 int main(void) {
 	int cursor_row = 0, cursor_col = 0;
+
+	/* Puzzle data structure
+	 *
+	 * 9x9 array of integers indexed first by row then column (i.e.
+	 * puzzle[row][col]. Each uint8_t is a bitfield:
+	 *
+	 *   7 6 5 4 3 2 1 0
+	 *   M _ _ _ a b c d
+	 *
+	 * M - mutable (0 for mutable, 1 for immutable)
+	 * abcd - the number in this position
+	 *
+	 * NOTE: "blank" is represented by all fields equal to zero.
+	 */
+	uint8_t puzzle[9][9] = {
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+		{0, 0, 0, 0, 0, 0, 0, 0, 0},
+	};
 
 	initscr();
 	noecho();

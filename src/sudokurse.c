@@ -51,6 +51,7 @@ int check_winner(uint8_t (*board)[9][9]);
 void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 	FILE *f = fopen(filename, "r");
 	int c, row, col;
+	uint8_t v;
 
 	for (row = 0; row < 9; row++) {
 		for (col = 0; col < 9; col++) {
@@ -62,15 +63,17 @@ void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 
 			/* if '.' then blank, if invalid character then blank... */
 			if ((char) c == '.') {
-				c = PUZZLE_BLANK;
+				v = PUZZLE_BLANK;
 			} else if ((char) c < '1' || (char) c > '9') {
-				c = PUZZLE_BLANK;
+				v = PUZZLE_BLANK;
+			} else {
+				v = (uint8_t) (c - '0');
 			}
 
-			(*board)[row][col] = (uint8_t) c;
+			(*board)[row][col] = v;
 
 			/* set immutable if not blank */
-			if (c != PUZZLE_BLANK) {
+			if (v != PUZZLE_BLANK) {
 				(*board)[row][col] |= 0x80;
 			}
 		}

@@ -34,8 +34,11 @@
 #define PUZZLE_BLANK (0)
 
 /* Color of squares which are the same value. */
+#define COLOR_DEFAULT (0)
 #define COLOR_SAME_NUMBER (1)
 #define COLOR_USER_SUPPLIED_VALUE (2)
+
+#define COLOR_IMMUTABLE (COLOR_DEFAULT)
 
 
 

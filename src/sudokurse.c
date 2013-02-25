@@ -61,8 +61,10 @@ void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 				/* TODO implement failure to read file */
 			}
 
-			/* if '.' then blank, if invalid character then blank... */
+			/* if '.' or ' ' then blank, if invalid character then blank... */
 			if ((char) c == '.') {
+				v = PUZZLE_BLANK;
+			} else if ((char) c == ' ') {
 				v = PUZZLE_BLANK;
 			} else if ((char) c < '1' || (char) c > '9') {
 				v = PUZZLE_BLANK;

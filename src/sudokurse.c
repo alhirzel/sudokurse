@@ -201,11 +201,11 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 		for (col = 0; col < 9; col++) {
 			mvaddch(0, 4*(col+1), (chtype) ('1' + col));
 
-			uint8_t val_under_cursor = (*board)[row][col];
+			uint8_t val_at_iterator = (*board)[row][col];
 			chtype newchar;
 
 			/* determine new character */
-			if (PUZZLE_BLANK == val_under_cursor) {
+			if (PUZZLE_BLANK == val_at_iterator) {
 
 				/* blank */
 				newchar = '.';
@@ -213,11 +213,11 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 			} else {
 
 				/* some number */
-				newchar = (val_under_cursor & 0xF) + '0';
+				newchar = (val_at_iterator & 0xF) + '0';
 
 				/* use specific color if same as cursor position */
-				if ((val_under_cursor & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
-					if (PUZZLE_BLANK != val_under_cursor) {
+				if ((val_at_iterator & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
+					if (PUZZLE_BLANK != val_at_iterator) {
 						newchar |= COLOR_PAIR(COLOR_SAME_NUMBER);
 					}
 

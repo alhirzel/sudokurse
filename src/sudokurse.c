@@ -33,6 +33,9 @@
 /* "blank" value for a given square in the puzzle (see main). */
 #define PUZZLE_BLANK (0)
 
+#define IS_IMMUTABLE(b, r, c) (0x80 == (((b)[r][c]) & 0x80))
+#define IS_USER_SUPPLIED(b, r, c) (0x40 == (((b)[r][c]) & 0x40))
+
 /* Color of squares which are the same value. */
 #define COLOR_DEFAULT (0)
 #define COLOR_SAME_NUMBER (1)
@@ -212,7 +215,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 			}
 
 			/* underline if immutable */
-			if (1 == val_under_cursor >> 7) {
+			if (IS_IMMUTABLE(*board, row, col)) {
 				newchar |= A_BOLD;
 			}
 
@@ -230,7 +233,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 
 
-#define WIN (((1<<9) - 1) << 1)
+#define WIN_VALUE (((1<<9) - 1) << 1)
 #define BV(r, c) (1 << ((*board)[r][c] & 0xF))
 
 /* returns 1 if game is won, 0 otherwise */
@@ -247,8 +250,8 @@ int check_winner(uint8_t (*board)[9][9]) {
 			winner_row |= BV(i, j);
 			winner_col |= BV(j, i);
 		}
-		if (winner_row != WIN) return 0;
-		if (winner_col != WIN) return 0;
+		if (winner_row != WIN_VALUE) return 0;
+		if (winner_col != WIN_VALUE) return 0;
 
 		/* search the i'th group */
 		winner_group = 0;
@@ -256,7 +259,7 @@ int check_winner(uint8_t (*board)[9][9]) {
 		winner_group |= BV(r+0, c+0) | BV(r+0, c+1) | BV(r+0, c+2);
 		winner_group |= BV(r+1, c+0) | BV(r+1, c+1) | BV(r+1, c+2);
 		winner_group |= BV(r+2, c+0) | BV(r+2, c+1) | BV(r+2, c+2);
-		if (winner_group != WIN) return 0;
+		if (winner_group != WIN_VALUE) return 0;
 	}
 	return 1;
 }
@@ -272,9 +275,10 @@ int main(void) {
 	 * puzzle[row][col]. Each uint8_t is a bitfield:
 	 *
 	 *   7 6 5 4 3 2 1 0
-	 *   M _ _ _ a b c d
+	 *   M U _ _ a b c d
 	 *
 	 * M - mutable (0 for mutable, 1 for immutable)
+	 * U - user-supplied (0 for not, 1 for user filled in)
 	 * abcd - the number in this position
 	 *
 	 * NOTE: "blank" is represented by all fields equal to zero.
@@ -376,7 +380,7 @@ int main(void) {
 				curs_set(CURSOR_VERYVISIBLE);
 
 				/* is this square immutable? if so, alert user */
-				if (1 == (puzzle[cursor_row][cursor_col] >> 7)) {
+				if (IS_IMMUTABLE(puzzle, cursor_row, cursor_col)) {
 					flash();
 					break;
 				}
@@ -391,6 +395,9 @@ int main(void) {
 					break;
 				} else {                         /* yes: a number */
 					new_value = (uint8_t) (c - '0');
+
+					/* new square is definitely user-supplied.. */
+					new_value |= 0x40;
 				}
 
 				/* save this change on the 'undo' stack */

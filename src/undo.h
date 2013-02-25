@@ -25,7 +25,6 @@
 
 /* DATA STRUCTURES */
 struct undo_move_record {
-	struct undo_move_record *prev;
 	struct undo_move_record *next;
 
 	int row;
@@ -39,6 +38,7 @@ struct undo_move_record {
 /* FUNCTION PROTOTYPES */
 void undo_push(struct undo_move_record **list, struct undo_move_record *new_item);
 struct undo_move_record *undo_pop(struct undo_move_record **list);
+void undo_free_entire_list(struct undo_move_record **list);
 
 
 

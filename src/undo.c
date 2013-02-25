@@ -22,13 +22,33 @@
 
 
 void undo_push(struct undo_move_record **list, struct undo_move_record *new_item) {
-	return;
+	new_item->next = *list;
+	*list = new_item;
 }
 
 
 
 /* returns NULL if no undo operation is left on the stack */
 struct undo_move_record *undo_pop(struct undo_move_record **list) {
-	return NULL;
+	struct undo_move_record *to_be_returned;
+
+	to_be_returned = *list;
+	if (NULL != to_be_returned) {
+		*list = (*list)->next;
+	}
+
+	return to_be_returned;
+}
+
+
+
+void undo_free_entire_list(struct undo_move_record **list) {
+	struct undo_move_record *to_be_freed;
+
+	while ((to_be_freed = undo_pop(list))) {
+		free(to_be_freed);
+	}
+
+	*list = (struct undo_move_record *) NULL;
 }
 

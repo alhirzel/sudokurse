@@ -276,6 +276,7 @@ int main(void) {
 		if (ERR == c) {
 			endwin();
 			fputs("Error reading key.", stderr);
+			undo_free_entire_list(&undo_stack);
 			exit(EXIT_FAILURE);
 		}
 
@@ -366,6 +367,7 @@ int main(void) {
 				if (check_winner(&puzzle) == 1) {
 					endwin();
 					puts("You win!");
+					undo_free_entire_list(&undo_stack);
 					exit(EXIT_SUCCESS);
 				}
 				break;
@@ -374,11 +376,22 @@ int main(void) {
 			case 'u': // conflicts with diagonal movement (up/right)
 			case 'U':
 				temp_move_ptr = undo_pop(&undo_stack);
-				cursor_row = temp_move_ptr->row;
-				cursor_col = temp_move_ptr->col;
-				puzzle[cursor_row][cursor_col] = temp_move_ptr->old_value;
-				free(temp_move_ptr);
-				draw_board(&puzzle, cursor_row, cursor_col);
+
+				if (NULL != temp_move_ptr) {
+
+					/* undo last move */
+					cursor_row = temp_move_ptr->row;
+					cursor_col = temp_move_ptr->col;
+					puzzle[cursor_row][cursor_col] = temp_move_ptr->old_value;
+					free(temp_move_ptr);
+					draw_board(&puzzle, cursor_row, cursor_col);
+
+				} else {
+
+					/* no more undo history to utilize */
+					flash();
+
+				}
 				break;
 
 		}

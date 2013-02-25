@@ -182,7 +182,10 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 			/* determine new character */
 			if (PUZZLE_BLANK == val_under_cursor) {
-				newchar = ' ';
+
+				/* blank */
+				newchar = '.';
+
 			} else {
 				newchar = (val_under_cursor & 0xF) + '0';
 			}

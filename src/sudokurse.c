@@ -33,6 +33,9 @@
 /* "blank" value for a given square in the puzzle (see main). */
 #define PUZZLE_BLANK (0)
 
+#define IS_IMMUTABLE(b, r, c) (0x80 == (((b)[r][c]) & 0x80))
+#define IS_USER_SUPPLIED(b, r, c) (0x40 == (((b)[r][c]) & 0x40))
+
 /* Color of squares which are the same value. */
 #define COLOR_SAME_NUMBER (1)
 
@@ -188,7 +191,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 			}
 
 			/* underline if immutable */
-			if (1 == val_under_cursor >> 7) {
+			if (IS_IMMUTABLE(*board, row, col)) {
 				newchar |= A_BOLD;
 			}
 
@@ -353,7 +356,7 @@ int main(void) {
 				curs_set(CURSOR_VERYVISIBLE);
 
 				/* is this square immutable? if so, alert user */
-				if (1 == (puzzle[cursor_row][cursor_col] >> 7)) {
+				if (IS_IMMUTABLE(puzzle, cursor_row, cursor_col)) {
 					flash();
 					break;
 				}

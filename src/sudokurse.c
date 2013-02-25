@@ -353,7 +353,7 @@ int main(void) {
 				refresh();
 
 				/* check for a win */
-				if (check_winner(&puzzle) == 1) {
+				if (1 == check_winner(&puzzle)) {
 					endwin();
 					puts("You win!");
 					exit(EXIT_SUCCESS);

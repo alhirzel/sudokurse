@@ -269,8 +269,8 @@ int main(void) {
 	/* start of game logic - read puzzle and put cursor on first blank square
 	 * (starting the cursor on an immutable square is suboptimal) */
 	read_puzzle("test.puzzle", &puzzle);
-	draw_board(&puzzle, cursor_row, cursor_col);
 	position_cursor_first_blank(&puzzle, &cursor_row, &cursor_col);
+	draw_board(&puzzle, cursor_row, cursor_col);
 	refresh();
 
 	/* infinite loop reading keyboard input */

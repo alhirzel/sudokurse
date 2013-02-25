@@ -154,9 +154,9 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 	/* draw numbers */
 	for (int row = 0; row < 9; row++) {
-		mvaddch(2*(row+1), 0, (chtype) ('1' + row) | A_UNDERLINE);
+		mvaddch(2*(row+1), 0, (chtype) ('1' + row) | A_BOLD);
 		for (int col = 0; col < 9; col++) {
-			mvaddch(0, 4*(col+1), (chtype) ('1' + col) | A_UNDERLINE);
+			mvaddch(0, 4*(col+1), (chtype) ('1' + col) | A_BOLD);
 
 			uint8_t val = (*board)[row][col];
 			chtype newchar;
@@ -170,7 +170,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 			/* underline if immutable */
 			if (1 == val >> 7) {
-				newchar |= A_UNDERLINE;
+				newchar |= A_BOLD;
 			}
 
 			/* use alternate color if same as cursor position */

@@ -207,7 +207,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 
 
-#define WIN (((1<<9) - 1) << 1)
+#define WIN_VALUE (((1<<9) - 1) << 1)
 #define BV(r, c) (1 << ((*board)[r][c] & 0xF))
 
 /* returns 1 if game is won, 0 otherwise */
@@ -224,8 +224,8 @@ int check_winner(uint8_t (*board)[9][9]) {
 			winner_row |= BV(i, j);
 			winner_col |= BV(j, i);
 		}
-		if (winner_row != WIN) return 0;
-		if (winner_col != WIN) return 0;
+		if (winner_row != WIN_VALUE) return 0;
+		if (winner_col != WIN_VALUE) return 0;
 
 		/* search the i'th group */
 		winner_group = 0;
@@ -233,7 +233,7 @@ int check_winner(uint8_t (*board)[9][9]) {
 		winner_group |= BV(r+0, c+0) | BV(r+0, c+1) | BV(r+0, c+2);
 		winner_group |= BV(r+1, c+0) | BV(r+1, c+1) | BV(r+1, c+2);
 		winner_group |= BV(r+2, c+0) | BV(r+2, c+1) | BV(r+2, c+2);
-		if (winner_group != WIN) return 0;
+		if (winner_group != WIN_VALUE) return 0;
 	}
 	return 1;
 }

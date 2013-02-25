@@ -249,9 +249,10 @@ int main(void) {
 	 * puzzle[row][col]. Each uint8_t is a bitfield:
 	 *
 	 *   7 6 5 4 3 2 1 0
-	 *   M _ _ _ a b c d
+	 *   M U _ _ a b c d
 	 *
 	 * M - mutable (0 for mutable, 1 for immutable)
+	 * U - user-supplied (0 for not, 1 for user filled in)
 	 * abcd - the number in this position
 	 *
 	 * NOTE: "blank" is represented by all fields equal to zero.
@@ -367,6 +368,9 @@ int main(void) {
 					break;
 				} else {                         /* yes: a number */
 					new_value = (uint8_t) (c - '0');
+
+					/* new square is definitely user-supplied.. */
+					new_value |= 0x40;
 				}
 
 				/* save this change on the 'undo' stack */

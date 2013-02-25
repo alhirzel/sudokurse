@@ -27,6 +27,8 @@
 #define CURSOR_NORMAL      (1)
 #define CURSOR_VERYVISIBLE (2)
 
+/* "blank" value for a given square in the puzzle (see main). */
+#define PUZZLE_BLANK (0)
 
 
 /* GLOBAL DATA */
@@ -52,7 +54,6 @@ uint8_t puzzle[9][9] = {
 	{0, 0, 0, 0, 0, 0, 0, 0, 0},
 	{0, 0, 0, 0, 0, 0, 0, 0, 0},
 };
-#define BLANK (0)
 
 #define COLOR_TWIN_SQUARES (1)
 
@@ -81,15 +82,15 @@ void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 
 			/* if '.' then blank, if invalid character then blank... */
 			if ((char) c == '.') {
-				c = BLANK;
+				c = PUZZLE_BLANK;
 			} else if ((char) c < '1' || (char) c > '9') {
-				c = BLANK;
+				c = PUZZLE_BLANK;
 			}
 
 			(*board)[row][col] = (uint8_t) c;
 
 			/* set immutable if not blank */
-			if (c != BLANK) {
+			if (c != PUZZLE_BLANK) {
 				(*board)[row][col] |= 0x80;
 			}
 		}
@@ -122,7 +123,7 @@ void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *c
 		for (int col = 0; col < 9; col++) {
 
 			/* if blank... */
-			if (BLANK == (*board)[row][col]) {
+			if (PUZZLE_BLANK == (*board)[row][col]) {
 				position_cursor(row, col);
 				*cursor_row = row;
 				*cursor_col = col;
@@ -183,7 +184,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 			chtype newchar;
 
 			/* determine new character */
-			if (BLANK == val) {
+			if (PUZZLE_BLANK == val) {
 				newchar = ' ';
 			} else {
 				newchar = (val & 0xF) + '0';
@@ -300,7 +301,7 @@ int main(void) {
 				/* is the new value valid? */
 				uint8_t new_value;
 				if ((' ' == c) || ('.' == c)) {  /* yes: blank */
-					new_value = BLANK;
+					new_value = PUZZLE_BLANK;
 				} else if (c < '1' || c > '9') { /* no */
 					break;
 				} else {                         /* yes: a number */

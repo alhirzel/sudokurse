@@ -30,7 +30,8 @@
 /* "blank" value for a given square in the puzzle (see main). */
 #define PUZZLE_BLANK (0)
 
-#define COLOR_TWIN_SQUARES (1)
+/* Color of squares which are the same value. */
+#define COLOR_SAME_NUMBER (1)
 
 
 
@@ -172,7 +173,7 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 			/* use alternate color if same as cursor position */
 			if ((val & 0xF) == ((*board)[cursor_row][cursor_col] & 0xF)) {
-				newchar |= COLOR_PAIR(COLOR_TWIN_SQUARES);
+				newchar |= COLOR_PAIR(COLOR_SAME_NUMBER);
 			}
 
 			position_cursor(row, col);
@@ -247,9 +248,9 @@ int main(void) {
 	noecho();
 	curs_set(CURSOR_VERYVISIBLE);
 
-	/* colors */
+	/* Set up colors */
 	start_color();
-	init_pair(COLOR_TWIN_SQUARES, COLOR_RED, COLOR_BLACK);
+	init_pair(COLOR_SAME_NUMBER, COLOR_RED, COLOR_BLACK);
 
 	read_puzzle("test.puzzle", &puzzle);
 	draw_board(&puzzle, cursor_row, cursor_col);

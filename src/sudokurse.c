@@ -19,6 +19,7 @@
 #include <ncurses.h>
 #include <stdint.h>
 #include <stdlib.h>
+#include "undo.h"
 
 
 
@@ -253,6 +254,10 @@ int main(void) {
 		{0, 0, 0, 0, 0, 0, 0, 0, 0},
 	};
 
+	/* Holds pointer to first 'undo_move_record' */
+	struct undo_move_record *undo_stack = NULL;
+	struct undo_move_record *temp_move_ptr;
+
 	initscr();
 	noecho();
 	curs_set(CURSOR_VERYVISIBLE);
@@ -276,6 +281,7 @@ int main(void) {
 		if (ERR == c) {
 			endwin();
 			fputs("Error reading key.", stderr);
+			undo_free_entire_list(&undo_stack);
 			exit(EXIT_FAILURE);
 		}
 
@@ -302,6 +308,7 @@ int main(void) {
 				break;
 
 			/* diagonal movement commands borrowed from NetHack. */
+			/* TOOD these conflict with 'undo' functionality
 			case 'u':
 				DECR_MOD_9(cursor_row);
 				INCR_MOD_9(cursor_col);
@@ -322,6 +329,7 @@ int main(void) {
 				INCR_MOD_9(cursor_col);
 				draw_board(&puzzle, cursor_row, cursor_col);
 				break;
+			*/
 
 			/* replace character */
 			case 'r':
@@ -347,6 +355,14 @@ int main(void) {
 					new_value = (uint8_t) (c - '0');
 				}
 
+				/* save this change on the 'undo' stack */
+				temp_move_ptr = malloc(sizeof(struct undo_move_record));
+				temp_move_ptr->row = cursor_row;
+				temp_move_ptr->col = cursor_col;
+				temp_move_ptr->old_value = puzzle[temp_move_ptr->row][temp_move_ptr->col];
+				temp_move_ptr->new_value = new_value;
+				undo_push(&undo_stack, temp_move_ptr);
+
 				/* make the change */
 				puzzle[cursor_row][cursor_col] = new_value;
 				draw_board(&puzzle, cursor_row, cursor_col);
@@ -356,7 +372,30 @@ int main(void) {
 				if (1 == check_winner(&puzzle)) {
 					endwin();
 					puts("You win!");
+					undo_free_entire_list(&undo_stack);
 					exit(EXIT_SUCCESS);
+				}
+				break;
+
+			/* undo */
+			case 'u': // conflicts with diagonal movement (up/right)
+			case 'U':
+				temp_move_ptr = undo_pop(&undo_stack);
+
+				if (NULL != temp_move_ptr) {
+
+					/* undo last move */
+					cursor_row = temp_move_ptr->row;
+					cursor_col = temp_move_ptr->col;
+					puzzle[cursor_row][cursor_col] = temp_move_ptr->old_value;
+					free(temp_move_ptr);
+					draw_board(&puzzle, cursor_row, cursor_col);
+
+				} else {
+
+					/* no more undo history to utilize */
+					flash();
+
 				}
 				break;
 

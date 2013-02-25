@@ -22,6 +22,8 @@
 
 
 
+/* CONSTANTS */
+
 /* These should really be in <ncurses.h>... */
 #define CURSOR_INVISIBLE   (0)
 #define CURSOR_NORMAL      (1)
@@ -188,6 +190,8 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 
 #define WIN (((1<<9) - 1) << 1)
 #define BV(r, c) (1 << ((*board)[r][c] & 0xF))
+
+/* returns 1 if game is won, 0 otherwise */
 int check_winner(uint8_t (*board)[9][9]) {
 	uint16_t winner_row, winner_col, winner_group;
 
@@ -252,11 +256,14 @@ int main(void) {
 	start_color();
 	init_pair(COLOR_SAME_NUMBER, COLOR_RED, COLOR_BLACK);
 
+	/* start of game logic - read puzzle and put cursor on first blank square
+	 * (starting the cursor on an immutable square is suboptimal) */
 	read_puzzle("test.puzzle", &puzzle);
 	draw_board(&puzzle, cursor_row, cursor_col);
 	position_cursor_first_blank(&puzzle, &cursor_row, &cursor_col);
 	refresh();
 
+	/* infinite loop reading keyboard input */
 	while (1 == 1) {
 
 		int c = getch();
@@ -323,6 +330,8 @@ int main(void) {
 					break;
 				}
 
+				/* have now established that it is safe to change this square */
+
 				/* is the new value valid? */
 				uint8_t new_value;
 				if ((' ' == c) || ('.' == c)) {  /* yes: blank */
@@ -332,15 +341,20 @@ int main(void) {
 				} else {                         /* yes: a number */
 					new_value = (uint8_t) (c - '0');
 				}
+
+				/* make the change */
 				puzzle[cursor_row][cursor_col] = new_value;
 				draw_board(&puzzle, cursor_row, cursor_col);
 				refresh();
+
+				/* check for a win */
 				if (check_winner(&puzzle) == 1) {
 					endwin();
 					puts("You win!");
 					exit(EXIT_SUCCESS);
 				}
 				break;
+
 		}
 	}
 }

@@ -40,11 +40,14 @@
 
 #define COLOR_IMMUTABLE (COLOR_DEFAULT)
 
+#define NO_VISUAL_CUE (0)
+#define VISUAL_CUE (1)
+
 
 
 /* FUNCTION PROTOTYPES */
 void read_puzzle(char *filename, uint8_t (*board)[9][9]);
-void position_cursor(int cursor_row, int cursor_col);
+void position_cursor(uint8_t (*board)[9][9], int cursor_row, int cursor_col, int use_visual_cue);
 void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *cursor_col);
 void draw_board_box(void);
 void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col);
@@ -101,7 +104,21 @@ void read_puzzle(char *filename, uint8_t (*board)[9][9]) {
 
 
 
-void position_cursor(int cursor_row, int cursor_col) {
+void position_cursor(uint8_t (*board)[9][9], int cursor_row, int cursor_col, int use_visual_cue) {
+	int color;
+
+	if (use_visual_cue) {
+		if (IS_IMMUTABLE(*board, cursor_row, cursor_col)) {
+			color = COLOR_IMMUTABLE;
+		} else {
+			color = COLOR_USER_SUPPLIED_VALUE;
+		}
+		mvaddch(2*cursor_row+2, 4*cursor_col+3, ((chtype) '>') | A_BOLD | COLOR_PAIR(color));
+		mvaddch(2*cursor_row+2, 4*cursor_col+5, ((chtype) '<') | A_BOLD | COLOR_PAIR(color));
+	} else {
+		mvaddch(2*cursor_row+2, 4*cursor_col+3, (chtype) ' ');
+		mvaddch(2*cursor_row+2, 4*cursor_col+5, (chtype) ' ');
+	}
 	move(2*cursor_row+2, 4*cursor_col+4);
 }
 
@@ -115,7 +132,7 @@ void position_cursor_first_blank(uint8_t (*board)[9][9], int *cursor_row, int *c
 
 			/* if blank... */
 			if (PUZZLE_BLANK == (*board)[row][col]) {
-				position_cursor(row, col);
+				position_cursor(board, row, col, NO_VISUAL_CUE);
 				*cursor_row = row;
 				*cursor_col = col;
 				return;
@@ -204,12 +221,11 @@ void draw_board(uint8_t (*board)[9][9], int cursor_row, int cursor_col) {
 				newchar |= COLOR_PAIR(COLOR_SAME_NUMBER);
 			}
 
-			position_cursor(row, col);
+			position_cursor(board, row, col, NO_VISUAL_CUE);
 			addch(newchar);
 		}
 	}
-	position_cursor(cursor_row, cursor_col);
-	curs_set(CURSOR_VERYVISIBLE);
+	position_cursor(board, cursor_row, cursor_col, VISUAL_CUE);
 }
 
 

@@ -1,6 +1,6 @@
 NAME=sudokurse
-SRC=undo.c
-SRC+=${NAME}.c
+SRC=src/undo.c
+SRC+=src/${NAME}.c
 CC=clang
 
 # Use this CC line instead to use GCC

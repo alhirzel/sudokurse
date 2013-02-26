@@ -1,0 +1,15 @@
+Source: sudokurse
+Section: games
+Priority: optional
+Maintainer: Alex Hirzel <alex@hirzel.us>
+Build-Depends: debhelper (>=9), clang, libncurses5, libncurses5-dev
+Standards-Version: 3.9.3
+Homepage: http://github.com/alhirzel/sudokurse
+Vcs-Git: git://github.com/alhirzel/sudokurse.git
+Vcs-Browser: http://github.com/alhirzel/sudokurse
+
+Package: sudokurse
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}
+Description: Quick hackjob version of Sudoku with ncurses
+ A basic version of sudoku.

@@ -1,0 +1,6 @@
+sudokurse (0~20130225) unstable; urgency=low
+
+  * First shot at making Debian package.
+  * sudokurse is not yet stable enough to assign version numbers or to tag releases.
+
+ -- Alex Hirzel <alex@hirzel.us>  Mon, 25 Feb 2013 19:55:02 -0500

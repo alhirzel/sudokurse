@@ -1,3 +1,5 @@
   * Probably doesn't check for "trivial win" (i.e. opening completed puzzle)
   * Make game board size configurable
+  * Write man page
+  * Determine where to store puzzles
   * Improve file loading (currently segfaults without a puzzle)

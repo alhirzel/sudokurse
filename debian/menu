@@ -1,0 +1,2 @@
+?package(sudokurse):needs="text" section="Games/Puzzles"\
+  title="sudokurse" command="/usr/bin/sudokurse"

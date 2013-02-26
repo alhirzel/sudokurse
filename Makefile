@@ -14,5 +14,8 @@ ${NAME}: ${SRC}
 clean:
 	rm -f ${NAME}
 
-.PHONY: clean
+install:
+	install -D ${NAME} ${DESTDIR}/usr/bin/${NAME}
+
+.PHONY: clean install
 
